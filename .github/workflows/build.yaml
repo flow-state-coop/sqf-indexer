@@ -1,0 +1,24 @@
+name: Build
+on:
+  push:
+    branches:
+      - "**"
+      - "!main"
+  pull_request:
+    branches:
+      - "**"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Docker Compose
+        uses: hoverkraft-tech/compose-action@v2.0.0
+        with:
+          compose-file: "./docker-compose.yaml"
+        env:
+          DATABASE_URI: ${{ secrets.DATABASE_URI }}
+          RPC_URL_SEPOLIA: ${{ secrets.RPC_URL_SEPOLIA }}

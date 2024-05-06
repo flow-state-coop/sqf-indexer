@@ -1,0 +1,26 @@
+services:
+  sqf-indexer:
+    build:
+      context: .
+    ports:
+      - '3000:3000'
+    command: npm run start
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URI=${DATABASE_URI}
+      - RPC_URL_SEPOLIA=${RPC_URL_SEPOLIA}
+    volumes:
+      - sqlite_data:/sqlite_cache
+  db:
+    image: postgres:14
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=sqf-indexer
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+volumes:
+  postgres_data:
+  sqlite_data:
