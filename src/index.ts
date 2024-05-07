@@ -1,4 +1,10 @@
-import { Hex, decodeAbiParameters } from "viem";
+import {
+  createPublicClient,
+  http,
+  Hex,
+  decodeAbiParameters,
+  decodeFunctionData,
+} from "viem";
 import {
   createIndexer,
   createHttpRpcClient,
@@ -17,6 +23,9 @@ async function main() {
   await createSchemaIfNotExists();
 
   for (const network of networks) {
+    const publicClient = createPublicClient({
+      transport: http(network.rpc),
+    });
     const indexer = createIndexer({
       chain: {
         id: network.id,
@@ -33,7 +42,7 @@ async function main() {
 
     indexer.on("event", async (args) => {
       if (args.event.name === "PoolCreated") {
-        const { params, blockNumber } = args.event;
+        const { params, blockNumber, transactionHash } = args.event;
         const { readContract, subscribeToContract, chainId } = args;
 
         const strategyId = await readContract({
@@ -47,14 +56,30 @@ async function main() {
             poolId,
             token,
             profileId,
-            strategy: strategyAddress,
+            strategy,
             metadata: { pointer: metadataCid },
           } = params;
-          const strategyName = "SQFSuperfluidv1";
           subscribeToContract({
             contract: "AlloStrategy",
-            address: strategyAddress,
+            address: strategy,
           });
+
+          const strategyAddress = strategy.toLowerCase();
+          const strategyName = "SQFSuperfluidv1";
+          const tx = await publicClient.getTransaction({
+            hash: transactionHash,
+          });
+          const { args } = decodeFunctionData({
+            abi: abis["Allo"],
+            data: tx.input,
+          });
+          const managers = args[6]?.map((manager) => manager.toLowerCase()) ?? [
+            tx.from,
+          ];
+
+          if (managers.indexOf(tx.from) < 0) {
+            managers.push(tx.from);
+          }
 
           try {
             await db
@@ -62,7 +87,7 @@ async function main() {
               .values({
                 id: poolId.toString(),
                 chainId,
-                token,
+                token: token.toLowerCase(),
                 metadataCid,
                 createdAtBlock: blockNumber,
                 updatedAtBlock: blockNumber,
@@ -70,6 +95,7 @@ async function main() {
                 strategyId,
                 strategyName,
                 projectId: profileId,
+                managers,
                 tags: ["allo"],
               })
               .executeTakeFirst();
@@ -82,9 +108,10 @@ async function main() {
         const {
           blockNumber,
           params: { data: encodedData },
-          address: strategyAddress,
+          address,
         } = event;
 
+        const strategyAddress = address.toLowerCase();
         const poolId = await db
           .selectFrom("pools")
           .select("id")
@@ -111,9 +138,12 @@ async function main() {
               id: recipientId,
               chainId,
               poolId: poolId.id,
-              recipientAddress,
+              strategyAddress,
+              recipientAddress: recipientAddress.toLowerCase(),
               anchorAddress:
-                recipientId !== recipientAddress ? recipientId : null,
+                recipientId !== recipientAddress
+                  ? recipientId.toLowerCase()
+                  : null,
               status: "PENDING",
               metadataCid,
               createdAtBlock: blockNumber,
@@ -135,6 +165,9 @@ async function main() {
       });
     }
 
+    indexer.on("error", (err) => {
+      console.error(err);
+    });
     indexer.watch();
   }
 

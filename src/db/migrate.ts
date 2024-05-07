@@ -20,6 +20,7 @@ async function migrate<T>(db: Kysely<T>) {
     .addColumn("strategyId", "text")
     .addColumn("strategyName", "text")
     .addColumn("projectId", "text")
+    .addColumn("managers", sql`text[]`)
     .addPrimaryKeyConstraint("pools_pkey", ["id", "chainId"])
     .execute();
 
@@ -33,6 +34,7 @@ async function migrate<T>(db: Kysely<T>) {
     .addColumn("id", "text")
     .addColumn("chainId", "integer")
     .addColumn("poolId", "text")
+    .addColumn("strategyAddress", "text")
     .addColumn("recipientAddress", "text")
     .addColumn("anchorAddress", "text")
     .addColumn("status", ref("status"))

@@ -8,7 +8,6 @@ import {
   Selectable,
   Updateable,
 } from "kysely";
-import { Address } from "viem";
 import { schemaName, migrate } from "./migrate.js";
 
 type Database = {
@@ -19,14 +18,15 @@ type Database = {
 type PoolsTable = {
   id: string;
   chainId: number;
-  token: Address;
+  token: string;
   metadataCid: string;
   createdAtBlock: bigint;
   updatedAtBlock: bigint;
-  strategyAddress: Address;
+  strategyAddress: string;
   strategyId: string;
   strategyName: string;
   projectId: string;
+  managers: string[];
   tags: string[];
 };
 
@@ -34,8 +34,9 @@ type RecipientsTable = {
   id: string;
   chainId: number;
   poolId: string;
-  recipientAddress: Address;
-  anchorAddress: Address | null;
+  strategyAddress: string;
+  recipientAddress: string;
+  anchorAddress: string | null;
   status: "PENDING" | "REJECTED" | "APPROVED";
   metadataCid: string | null;
   createdAtBlock: bigint;
@@ -50,10 +51,12 @@ type Recipient = Selectable<RecipientsTable>;
 type RecipientNew = Insertable<RecipientsTable>;
 type RecipientUpdate = Updateable<RecipientsTable>;
 
+const pool = new pg.Pool({
+  connectionString: process.env.DATABASE_URI,
+});
+
 const dialect = new PostgresDialect({
-  pool: new pg.Pool({
-    connectionString: process.env.DATABASE_URI,
-  }),
+  pool,
 });
 
 const db = new Kysely<Database>({
