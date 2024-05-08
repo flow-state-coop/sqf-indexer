@@ -5,9 +5,7 @@ import { Indexer } from "chainsauce";
 import { Database } from "../db/index.js";
 import { decodeRegistrationDataAlloStrategy } from "./decode.js";
 import { abis } from "../lib/abi/index.js";
-
-const ALLO_STRATEGY_ID =
-  "0xf8a14294e80ff012e54157ec9d1b2827421f1e7f6bde38c06730b1c031b3f935";
+import { ALLO_STRATEGY_ID } from "../lib/constants.js";
 
 type IndexerContext = { publicClient: PublicClient; db: Kysely<Database> };
 
@@ -134,6 +132,39 @@ async function handleEvent(
             updatedAtBlock: event.blockNumber,
             tags: ["allo"],
           })
+          .execute();
+      } catch (err) {
+        console.warn("DB write error");
+      }
+
+      break;
+    }
+
+    case "UpdatedRegistration": {
+      const {
+        params: { data: encodedData },
+        address,
+      } = event;
+
+      const {
+        recipientId,
+        recipientAddress,
+        metadata: { pointer: metadataCid },
+      } = decodeRegistrationDataAlloStrategy(encodedData);
+
+      const strategyAddress = address.toLowerCase();
+
+      try {
+        await db
+          .updateTable("recipients")
+          .set({
+            recipientAddress: recipientAddress.toLowerCase(),
+            metadataCid,
+            updatedAtBlock: event.blockNumber,
+          })
+          .where("chainId", "=", chainId)
+          .where("strategyAddress", "=", strategyAddress)
+          .where("id", "=", recipientId)
           .execute();
       } catch (err) {
         console.warn("DB write error");
