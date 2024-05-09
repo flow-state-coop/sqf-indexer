@@ -1,0 +1,9 @@
+export { handleProfileCreated } from "./handleProfileCreated.js";
+export { handlePoolCreated } from "./handlePoolCreated.js";
+export { handleRegistered } from "./handleRegistered.js";
+export { handleUpdatedRegistration } from "./handleUpdatedRegistration.js";
+export { handleProfileMetadataUpdated } from "./handleProfileMetadataUpdated.js";
+export { handleProfileNameUpdated } from "./handleProfileNameUpdated.js";
+export { handleProfileOwnerUpdated } from "./handleProfileOwnerUpdated.js";
+export { handleRoleGranted } from "./handleRoleGranted.js";
+export { handleRoleRevoked } from "./handleRoleRevoked.js";
