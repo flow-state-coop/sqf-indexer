@@ -1,6 +1,7 @@
 import { EventHandlerArgs, Indexer } from "chainsauce";
 import { IndexerContext } from "../handleEvent.js";
 import { getPool } from "../../db/index.js";
+import { fetchIpfs } from "../ipfs.js";
 import { decodeRegistrationDataAlloStrategy } from "../decode.js";
 import { abis } from "../../lib/abi/index.js";
 
@@ -37,11 +38,13 @@ export async function handleRegistered(
     metadata: { pointer: metadataCid },
   } = decodeRegistrationDataAlloStrategy(encodedData);
 
+  const metadata = await fetchIpfs(metadataCid);
+
   try {
     await db
       .insertInto("recipients")
       .values({
-        id: recipientId,
+        id: recipientId.toLowerCase(),
         chainId,
         poolId: pool.id,
         strategyAddress,
@@ -50,6 +53,7 @@ export async function handleRegistered(
           recipientId !== recipientAddress ? recipientId.toLowerCase() : null,
         status: "PENDING",
         metadataCid,
+        metadata,
         createdAtBlock: event.blockNumber,
         updatedAtBlock: event.blockNumber,
         tags: ["allo"],

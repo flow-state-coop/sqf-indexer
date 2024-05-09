@@ -21,4 +21,4 @@ jobs:
           compose-file: "./docker-compose.yaml"
         env:
           DATABASE_URI: ${{ secrets.DATABASE_URI }}
-          RPC_URL_SEPOLIA: ${{ secrets.RPC_URL_SEPOLIA }}
+          RPC_URL_OPSEPOLIA: ${{ secrets.RPC_URL_OPSEPOLIA }}

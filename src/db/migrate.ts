@@ -96,6 +96,7 @@ async function migrate<T>(db: Kysely<T>) {
     .addColumn("anchorAddress", "text")
     .addColumn("status", ref("status"))
     .addColumn("metadataCid", "text")
+    .addColumn("metadata", "jsonb")
     .addColumn("createdAtBlock", "bigint")
     .addColumn("updatedAtBlock", "bigint")
     .addColumn("tags", sql`text[]`)

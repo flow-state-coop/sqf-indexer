@@ -5,8 +5,10 @@ export const ALLO_OWNER_ROLE =
 export const IPFS_GATEWAYS = [
   "https://gateway.pinata.cloud",
   "https://storry.tv",
-  "https://cf-ipfs.com",
   "https://4everland.io",
+  "https://cf-ipfs.com",
   "https://ipfs.runfission.com",
+  "https://w3s.link",
+  "https://dweb.link",
   "https://trustless-gateway.link",
 ];

@@ -24,8 +24,8 @@ export async function handleProfileMetadataUpdated(
   try {
     db.updateTable("profiles")
       .set({
-        metadataCid: metadataCid,
-        metadata: metadata,
+        metadataCid,
+        metadata,
       })
       .where("chainId", "=", chainId)
       .where("id", "=", params.profileId)

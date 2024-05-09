@@ -101,7 +101,7 @@ export async function handleRoleGranted(
       .insertInto("pendingPoolRoles")
       .values({
         chainId,
-        role: "manager",
+        role,
         address,
         createdAtBlock: event.blockNumber,
       })

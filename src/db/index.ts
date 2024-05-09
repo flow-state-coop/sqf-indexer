@@ -74,6 +74,7 @@ export type RecipientsTable = {
   anchorAddress: string | null;
   status: "PENDING" | "REJECTED" | "APPROVED";
   metadataCid: string | null;
+  metadata: unknown;
   createdAtBlock: bigint;
   updatedAtBlock: bigint;
   tags: string[];

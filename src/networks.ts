@@ -17,19 +17,20 @@ type Contract = {
 
 const networks: Network[] = [
   {
-    id: 11155111,
-    name: "sepolia",
-    rpc: process.env.RPC_URL_SEPOLIA ?? "https://sepolia.infura.io/v3",
+    id: 11155420,
+    name: "optimism-sepolia",
+    rpc:
+      process.env.RPC_URL_OPSEPOLIA ?? "https://optimism-sepolia.infura.io/v3",
     contracts: [
       {
         name: "Allo",
         address: "0x1133eA7Af70876e64665ecD07C0A0476d09465a1",
-        fromBlock: 5802180n,
+        fromBlock: 11724487n,
       },
       {
         name: "AlloRegistry",
         address: "0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3",
-        fromBlock: 5800180n,
+        fromBlock: 11724487n,
       },
     ],
   },
