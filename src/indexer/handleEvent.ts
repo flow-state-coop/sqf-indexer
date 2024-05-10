@@ -9,6 +9,7 @@ import {
   handlePoolCreated,
   handleRegistered,
   handleUpdatedRegistration,
+  handleReviewed,
   handleProfileMetadataUpdated,
   handleProfileNameUpdated,
   handleProfileOwnerUpdated,
@@ -47,6 +48,12 @@ async function handleEvent(
 
     case "UpdatedRegistration": {
       await handleUpdatedRegistration({ ...args, event });
+
+      break;
+    }
+
+    case "Reviewed": {
+      await handleReviewed({ ...args, event });
 
       break;
     }

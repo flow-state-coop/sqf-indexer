@@ -72,6 +72,7 @@ export type RecipientsTable = {
   strategyAddress: string;
   recipientAddress: string;
   anchorAddress: string | null;
+  superappAddress: string | null;
   status: "PENDING" | "REJECTED" | "APPROVED";
   metadataCid: string | null;
   metadata: unknown;

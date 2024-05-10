@@ -94,6 +94,7 @@ async function migrate<T>(db: Kysely<T>) {
     .addColumn("strategyAddress", "text")
     .addColumn("recipientAddress", "text")
     .addColumn("anchorAddress", "text")
+    .addColumn("superappAddress", "text")
     .addColumn("status", ref("status"))
     .addColumn("metadataCid", "text")
     .addColumn("metadata", "jsonb")

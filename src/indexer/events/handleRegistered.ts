@@ -51,6 +51,7 @@ export async function handleRegistered(
         recipientAddress: recipientAddress.toLowerCase(),
         anchorAddress:
           recipientId !== recipientAddress ? recipientId.toLowerCase() : null,
+        superappAddress: null,
         status: "PENDING",
         metadataCid,
         metadata,

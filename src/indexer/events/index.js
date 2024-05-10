@@ -2,6 +2,7 @@ export { handleProfileCreated } from "./handleProfileCreated.js";
 export { handlePoolCreated } from "./handlePoolCreated.js";
 export { handleRegistered } from "./handleRegistered.js";
 export { handleUpdatedRegistration } from "./handleUpdatedRegistration.js";
+export { handleReviewed } from "./handleReviewed.js";
 export { handleProfileMetadataUpdated } from "./handleProfileMetadataUpdated.js";
 export { handleProfileNameUpdated } from "./handleProfileNameUpdated.js";
 export { handleProfileOwnerUpdated } from "./handleProfileOwnerUpdated.js";

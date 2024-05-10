@@ -65,46 +65,50 @@ export async function handleRoleGranted(
 
     pool = await getPoolByRole(chainId, "admin", role);
 
-    if (pool !== null) {
+    try {
+      if (pool !== null) {
+        await db
+          .insertInto("poolRoles")
+          .values({
+            chainId,
+            poolId: pool.id,
+            role: "admin",
+            address,
+            createdAtBlock: event.blockNumber,
+          })
+          .execute();
+
+        return;
+      }
+
+      pool = await getPoolByRole(chainId, "manager", role);
+
+      if (pool !== null) {
+        await db
+          .insertInto("poolRoles")
+          .values({
+            chainId,
+            poolId: pool.id,
+            role: "manager",
+            address,
+            createdAtBlock: event.blockNumber,
+          })
+          .execute();
+
+        return;
+      }
+
       await db
-        .insertInto("poolRoles")
+        .insertInto("pendingPoolRoles")
         .values({
           chainId,
-          poolId: pool.id,
-          role: "admin",
+          role,
           address,
           createdAtBlock: event.blockNumber,
         })
         .execute();
-
-      return;
+    } catch (err) {
+      console.warn("DB write error");
     }
-
-    pool = await getPoolByRole(chainId, "manager", role);
-
-    if (pool !== null) {
-      await db
-        .insertInto("poolRoles")
-        .values({
-          chainId,
-          poolId: pool.id,
-          role: "manager",
-          address,
-          createdAtBlock: event.blockNumber,
-        })
-        .execute();
-
-      return;
-    }
-
-    await db
-      .insertInto("pendingPoolRoles")
-      .values({
-        chainId,
-        role,
-        address,
-        createdAtBlock: event.blockNumber,
-      })
-      .execute();
   }
 }
