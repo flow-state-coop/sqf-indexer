@@ -34,6 +34,18 @@ const networks: Network[] = [
       },
     ],
   },
+  {
+    id: 666666666,
+    name: "degen",
+    rpc: process.env.RPC_URL_DEGEN ?? "https://rpc.degen.tips",
+    contracts: [
+      {
+        name: "PoolFactory",
+        address: "0xcB15aE6b8C1c0A868c9c6494C49D65eFce23313A",
+        fromBlock: 17503928n,
+      },
+    ],
+  },
 ];
 
 export { networks };

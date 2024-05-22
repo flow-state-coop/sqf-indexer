@@ -6,52 +6,210 @@ import { fetchIpfs } from "../ipfs.js";
 import { abis } from "../../lib/abi/index.js";
 import { ALLO_STRATEGY_ID } from "../../lib/constants.js";
 
+const NULL_BYTES =
+  "0x0000000000000000000000000000000000000000000000000000000000000000";
+const ZERO_ADDRESS =
+  "0x0000000000000000000000000000000000000000";
+
 export async function handlePoolCreated(
   args: EventHandlerArgs<
     Indexer<typeof abis, IndexerContext>,
-    "Allo",
+    "Allo" | "PoolFactory",
     "PoolCreated"
-  >,
+  >
 ) {
-  const {
-    event,
-    chainId,
-    readContract,
-    subscribeToContract,
-    context: { db },
-  } = args;
+  if (args.event.contractName === "Allo") {
+    const {
+      event,
+      chainId,
+      readContract,
+      subscribeToContract,
+      context: { db },
+    } = args as EventHandlerArgs<
+      Indexer<typeof abis, IndexerContext>,
+      "Allo",
+      "PoolCreated"
+    >;
 
-  const { params } = event;
+    const { params } = event;
 
-  const strategyId = await readContract({
-    contract: "AlloStrategy",
-    address: params.strategy,
-    functionName: "getStrategyId",
-  });
+    const strategyId = await readContract({
+      contract: "AlloStrategy",
+      address: params.strategy,
+      functionName: "getStrategyId",
+    });
 
-  if (strategyId === ALLO_STRATEGY_ID) {
+    if (strategyId === ALLO_STRATEGY_ID) {
+      const {
+        poolId,
+        token,
+        profileId,
+        strategy,
+        metadata: { pointer: metadataCid },
+      } = params;
+
+      subscribeToContract({
+        contract: "AlloStrategy",
+        address: strategy,
+      });
+
+      const strategyAddress = strategy.toLowerCase();
+      const strategyName = "SQFSuperfluidv1";
+      const managerRole = pad(`0x${poolId.toString(16)}`);
+      const adminRole = keccak256(
+        encodePacked(["uint256", "string"], [poolId, "admin"])
+      );
+      const metadata = await fetchIpfs(metadataCid);
+
+      try {
+        await db
+          .insertInto("pools")
+          .values({
+            id: poolId.toString(),
+            chainId,
+            token: token.toLowerCase(),
+            metadataCid,
+            metadata,
+            managerRole,
+            adminRole,
+            createdAtBlock: event.blockNumber,
+            updatedAtBlock: event.blockNumber,
+            strategyAddress,
+            strategyId,
+            strategyName,
+            profileId,
+            tags: ["allo"],
+          })
+          .execute();
+
+        const pendingAdminRoles = await getPendingPoolRoles(chainId, adminRole);
+
+        if (pendingAdminRoles.length > 0) {
+          await db
+            .insertInto("poolRoles")
+            .values(
+              pendingAdminRoles.map((pendingAdminRole) => {
+                return {
+                  chainId,
+                  poolId: poolId.toString(),
+                  address: pendingAdminRole.address,
+                  role: "admin",
+                  createdAtBlock: event.blockNumber,
+                };
+              })
+            )
+            .execute();
+
+          await db
+            .deleteFrom("pendingPoolRoles")
+            .where(
+              "id",
+              "in",
+              pendingAdminRoles.map((role) => role.id)
+            )
+            .execute();
+        }
+
+        const pendingManagerRoles = await getPendingPoolRoles(
+          chainId,
+          managerRole
+        );
+
+        if (pendingManagerRoles.length > 0) {
+          await db
+            .insertInto("poolRoles")
+            .values(
+              pendingManagerRoles.map((pendingManagerRole) => {
+                return {
+                  chainId,
+                  poolId: poolId.toString(),
+                  address: pendingManagerRole.address,
+                  role: "manager",
+                  createdAtBlock: event.blockNumber,
+                };
+              })
+            )
+            .execute();
+
+          await db
+            .deleteFrom("pendingPoolRoles")
+            .where(
+              "id",
+              "in",
+              pendingManagerRoles.map((role) => role.id)
+            )
+            .execute();
+        }
+      } catch (err) {
+        console.warn("DB write error");
+      }
+    }
+  } else if (args.event.contractName === "PoolFactory") {
+    const {
+      event,
+      chainId,
+      readContract,
+      subscribeToContract,
+      context: { db },
+    } = args as EventHandlerArgs<
+      Indexer<typeof abis, IndexerContext>,
+      "PoolFactory",
+      "PoolCreated"
+    >;
+
+    const { params } = event;
     const {
       poolId,
+      poolAddress,
       token,
-      profileId,
-      strategy,
       metadata: { pointer: metadataCid },
     } = params;
 
     subscribeToContract({
-      contract: "AlloStrategy",
-      address: strategy,
+      contract: "StreamingQuadraticFunding",
+      address: poolAddress,
     });
 
-    const strategyAddress = strategy.toLowerCase();
-    const strategyName = "SQFSuperfluidv1";
+    const strategyName = "StreamingQuadraticFunding";
     const managerRole = pad(`0x${poolId.toString(16)}`);
     const adminRole = keccak256(
-      encodePacked(["uint256", "string"], [poolId, "admin"]),
+      encodePacked(["uint256", "string"], [poolId, "admin"])
     );
     const metadata = await fetchIpfs(metadataCid);
 
+    const adminAddress = await readContract({
+      contract: "StreamingQuadraticFunding",
+      address: poolAddress,
+      functionName: "admin",
+    });
+
     try {
+      await db
+        .insertInto("profiles")
+        .values({
+          id: NULL_BYTES,
+          chainId,
+          name: strategyName,
+          anchorAddress: ZERO_ADDRESS,
+          metadataCid,
+          metadata,
+          createdAtBlock: event.blockNumber,
+          updatedAtBlock: event.blockNumber,
+          tags: [],
+        })
+        .execute();
+
+      await db
+        .insertInto("profileRoles")
+        .values({
+          chainId,
+          profileId: NULL_BYTES,
+          address: poolAddress.toLowerCase(),
+          role: "owner",
+          createdAtBlock: event.blockNumber,
+        })
+        .execute();
+
       await db
         .insertInto("pools")
         .values({
@@ -64,72 +222,24 @@ export async function handlePoolCreated(
           adminRole,
           createdAtBlock: event.blockNumber,
           updatedAtBlock: event.blockNumber,
-          strategyAddress,
-          strategyId,
+          strategyAddress: poolAddress.toLowerCase(),
+          strategyId: NULL_BYTES,
           strategyName,
-          profileId,
-          tags: ["allo"],
+          profileId: NULL_BYTES,
+          tags: [],
         })
         .execute();
 
-      const pendingAdminRoles = await getPendingPoolRoles(chainId, adminRole);
-
-      if (pendingAdminRoles.length > 0) {
-        await db
-          .insertInto("poolRoles")
-          .values(
-            pendingAdminRoles.map((pendingAdminRole) => {
-              return {
-                chainId,
-                poolId: poolId.toString(),
-                address: pendingAdminRole.address,
-                role: "admin",
-                createdAtBlock: event.blockNumber,
-              };
-            }),
-          )
-          .execute();
-
-        await db
-          .deleteFrom("pendingPoolRoles")
-          .where(
-            "id",
-            "in",
-            pendingAdminRoles.map((role) => role.id),
-          )
-          .execute();
-      }
-
-      const pendingManagerRoles = await getPendingPoolRoles(
-        chainId,
-        managerRole,
-      );
-
-      if (pendingManagerRoles.length > 0) {
-        await db
-          .insertInto("poolRoles")
-          .values(
-            pendingManagerRoles.map((pendingManagerRole) => {
-              return {
-                chainId,
-                poolId: poolId.toString(),
-                address: pendingManagerRole.address,
-                role: "admin",
-                createdAtBlock: event.blockNumber,
-              };
-            }),
-          )
-          .execute();
-
-        await db
-          .deleteFrom("pendingPoolRoles")
-          .where(
-            "id",
-            "in",
-            pendingManagerRoles.map((role) => role.id),
-          )
-          .execute();
-      }
+      await db
+        .insertInto("poolRoles")
+        .values({
+          chainId,
+          poolId: poolId.toString(),
+          address: adminAddress,
+          role: "admin",
+          createdAtBlock: event.blockNumber,
+        })
+        .execute();
     } catch (err) {
       console.warn("DB write error");
     }
