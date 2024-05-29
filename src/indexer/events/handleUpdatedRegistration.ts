@@ -47,7 +47,7 @@ export async function handleUpdatedRegistration(
         })
         .where("chainId", "=", chainId)
         .where("strategyAddress", "=", strategyAddress)
-        .where("id", "=", recipientId)
+        .where("id", "=", recipientId.toLowerCase())
         .execute();
     } catch (err) {
       console.warn("DB write error");
@@ -84,7 +84,7 @@ export async function handleUpdatedRegistration(
         })
         .where("chainId", "=", chainId)
         .where("strategyAddress", "=", strategyAddress)
-        .where("id", "=", recipientAddress)
+        .where("id", "=", recipientAddress.toLowerCase())
         .execute();
     } catch (err) {
       console.warn("DB write error");

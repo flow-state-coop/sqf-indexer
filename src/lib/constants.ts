@@ -7,6 +7,7 @@ export const NULL_BYTES =
 export const ZERO_ADDRESS = "0x0000000000000000000000000000000000000000";
 export const IPFS_GATEWAYS = [
   "https://gateway.pinata.cloud",
+  "https://nftstorage.link",
   "https://storry.tv",
   "https://4everland.io",
   "https://cf-ipfs.com",
