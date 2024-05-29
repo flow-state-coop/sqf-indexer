@@ -10,6 +10,7 @@ import {
   handleRegistered,
   handleUpdatedRegistration,
   handleReviewed,
+  handleCanceled,
   handleProfileMetadataUpdated,
   handleProfileNameUpdated,
   handleProfileOwnerUpdated,
@@ -54,6 +55,12 @@ async function handleEvent(
 
     case "Reviewed": {
       await handleReviewed({ ...args, event });
+
+      break;
+    }
+
+    case "Canceled": {
+      await handleCanceled({ ...args, event });
 
       break;
     }

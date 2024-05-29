@@ -73,7 +73,7 @@ export type RecipientsTable = {
   recipientAddress: string;
   anchorAddress: string | null;
   superappAddress: string | null;
-  status: "PENDING" | "REJECTED" | "APPROVED";
+  status: "PENDING" | "REJECTED" | "APPROVED" | "CANCELED";
   metadataCid: string | null;
   metadata: unknown;
   createdAtBlock: bigint;

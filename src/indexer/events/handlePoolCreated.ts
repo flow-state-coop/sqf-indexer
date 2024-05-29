@@ -4,19 +4,18 @@ import { getPendingPoolRoles } from "../../db/index.js";
 import { IndexerContext } from "../handleEvent.js";
 import { fetchIpfs } from "../ipfs.js";
 import { abis } from "../../lib/abi/index.js";
-import { ALLO_STRATEGY_ID } from "../../lib/constants.js";
-
-const NULL_BYTES =
-  "0x0000000000000000000000000000000000000000000000000000000000000000";
-const ZERO_ADDRESS =
-  "0x0000000000000000000000000000000000000000";
+import {
+  ALLO_STRATEGY_ID,
+  NULL_BYTES,
+  ZERO_ADDRESS,
+} from "../../lib/constants.js";
 
 export async function handlePoolCreated(
   args: EventHandlerArgs<
     Indexer<typeof abis, IndexerContext>,
     "Allo" | "PoolFactory",
     "PoolCreated"
-  >
+  >,
 ) {
   if (args.event.contractName === "Allo") {
     const {
@@ -57,7 +56,7 @@ export async function handlePoolCreated(
       const strategyName = "SQFSuperfluidv1";
       const managerRole = pad(`0x${poolId.toString(16)}`);
       const adminRole = keccak256(
-        encodePacked(["uint256", "string"], [poolId, "admin"])
+        encodePacked(["uint256", "string"], [poolId, "admin"]),
       );
       const metadata = await fetchIpfs(metadataCid);
 
@@ -96,7 +95,7 @@ export async function handlePoolCreated(
                   role: "admin",
                   createdAtBlock: event.blockNumber,
                 };
-              })
+              }),
             )
             .execute();
 
@@ -105,14 +104,14 @@ export async function handlePoolCreated(
             .where(
               "id",
               "in",
-              pendingAdminRoles.map((role) => role.id)
+              pendingAdminRoles.map((role) => role.id),
             )
             .execute();
         }
 
         const pendingManagerRoles = await getPendingPoolRoles(
           chainId,
-          managerRole
+          managerRole,
         );
 
         if (pendingManagerRoles.length > 0) {
@@ -127,7 +126,7 @@ export async function handlePoolCreated(
                   role: "manager",
                   createdAtBlock: event.blockNumber,
                 };
-              })
+              }),
             )
             .execute();
 
@@ -136,7 +135,7 @@ export async function handlePoolCreated(
             .where(
               "id",
               "in",
-              pendingManagerRoles.map((role) => role.id)
+              pendingManagerRoles.map((role) => role.id),
             )
             .execute();
         }
@@ -173,7 +172,7 @@ export async function handlePoolCreated(
     const strategyName = "StreamingQuadraticFunding";
     const managerRole = pad(`0x${poolId.toString(16)}`);
     const adminRole = keccak256(
-      encodePacked(["uint256", "string"], [poolId, "admin"])
+      encodePacked(["uint256", "string"], [poolId, "admin"]),
     );
     const metadata = await fetchIpfs(metadataCid);
 

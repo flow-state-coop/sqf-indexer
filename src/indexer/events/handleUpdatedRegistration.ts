@@ -9,7 +9,7 @@ export async function handleUpdatedRegistration(
     Indexer<typeof abis, IndexerContext>,
     "AlloStrategy" | "StreamingQuadraticFunding",
     "UpdatedRegistration"
-  >
+  >,
 ) {
   if (args.event.contractName === "AlloStrategy") {
     const {
@@ -63,10 +63,7 @@ export async function handleUpdatedRegistration(
       "UpdatedRegistration"
     >;
 
-    const {
-      params,
-      address,
-    } = event;
+    const { params, address } = event;
 
     const {
       recipientAddress,

@@ -1,6 +1,6 @@
 import { Kysely, sql } from "kysely";
 
-const schemaName = "1";
+const schemaName = "2";
 
 async function migrate<T>(db: Kysely<T>) {
   const ref = (name: string) => sql.table(`${schemaName}.${name}`);
@@ -83,7 +83,7 @@ async function migrate<T>(db: Kysely<T>) {
 
   await schema
     .createType("status")
-    .asEnum(["PENDING", "REJECTED", "APPROVED"])
+    .asEnum(["PENDING", "REJECTED", "APPROVED", "CANCELED"])
     .execute();
 
   await schema

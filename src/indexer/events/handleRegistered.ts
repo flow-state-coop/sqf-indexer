@@ -10,7 +10,7 @@ export async function handleRegistered(
     Indexer<typeof abis, IndexerContext>,
     "AlloStrategy" | "StreamingQuadraticFunding",
     "Registered"
-  >
+  >,
 ) {
   if (args.event.contractName === "AlloStrategy") {
     const {
