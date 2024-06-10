@@ -1,5 +1,6 @@
 export { handleProfileCreated } from "./handleProfileCreated.js";
 export { handlePoolCreated } from "./handlePoolCreated.js";
+export { handlePoolMetadataUpdated } from "./handlePoolMetadataUpdated.js";
 export { handleRegistered } from "./handleRegistered.js";
 export { handleUpdatedRegistration } from "./handleUpdatedRegistration.js";
 export { handleReviewed } from "./handleReviewed.js";

@@ -7,6 +7,7 @@ import { abis } from "../lib/abi/index.js";
 import {
   handleProfileCreated,
   handlePoolCreated,
+  handlePoolMetadataUpdated,
   handleRegistered,
   handleUpdatedRegistration,
   handleReviewed,
@@ -37,6 +38,12 @@ async function handleEvent(
 
     case "PoolCreated": {
       await handlePoolCreated({ ...args, event });
+
+      break;
+    }
+
+    case "PoolMetadataUpdated": {
+      await handlePoolMetadataUpdated({ ...args, event });
 
       break;
     }
