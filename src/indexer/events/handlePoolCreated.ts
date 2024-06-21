@@ -59,6 +59,11 @@ export async function handlePoolCreated(
         encodePacked(["uint256", "string"], [poolId, "admin"]),
       );
       const metadata = await fetchIpfs(metadataCid);
+      const allocationToken = await readContract({
+        contract: "AlloStrategy",
+        address: params.strategy,
+        functionName: "allocationSuperToken",
+      });
 
       try {
         await db
@@ -66,7 +71,8 @@ export async function handlePoolCreated(
           .values({
             id: poolId.toString(),
             chainId,
-            token: token.toLowerCase(),
+            allocationToken: allocationToken.toLowerCase(),
+            matchingToken: token.toLowerCase(),
             metadataCid,
             metadata,
             managerRole,
@@ -181,6 +187,11 @@ export async function handlePoolCreated(
       address: poolAddress,
       functionName: "admin",
     });
+    const allocationToken = await readContract({
+      contract: "StreamingQuadraticFunding",
+      address: poolAddress,
+      functionName: "allocationSuperToken",
+    });
 
     try {
       await db
@@ -214,7 +225,8 @@ export async function handlePoolCreated(
         .values({
           id: poolId.toString(),
           chainId,
-          token: token.toLowerCase(),
+          allocationToken: allocationToken.toLowerCase(),
+          matchingToken: token.toLowerCase(),
           metadataCid,
           metadata,
           managerRole,

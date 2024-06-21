@@ -51,7 +51,8 @@ export type ProfileRolesTable = {
 export type PoolsTable = {
   id: string;
   chainId: number;
-  token: string;
+  allocationToken: string;
+  matchingToken: string;
   metadataCid: string;
   metadata: unknown;
   createdAtBlock: bigint;

@@ -1,6 +1,6 @@
 import { Kysely, sql } from "kysely";
 
-const schemaName = "2";
+const schemaName = "3";
 
 async function migrate<T>(db: Kysely<T>) {
   const ref = (name: string) => sql.table(`${schemaName}.${name}`);
@@ -60,7 +60,8 @@ async function migrate<T>(db: Kysely<T>) {
     .createTable("pools")
     .addColumn("id", "text")
     .addColumn("chainId", "integer")
-    .addColumn("token", "text")
+    .addColumn("allocationToken", "text")
+    .addColumn("matchingToken", "text")
     .addColumn("tags", sql`text[]`)
     .addColumn("metadataCid", "text")
     .addColumn("metadata", "jsonb")
