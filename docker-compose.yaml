@@ -9,6 +9,7 @@ services:
       - NODE_ENV=production
       - DATABASE_URI=${DATABASE_URI}
       - RPC_URL_OPSEPOLIA=${RPC_URL_OPSEPOLIA}
+      - RPC_URL_BASE=${RPC_URL_BASE}
     volumes:
       - sqlite_data:/sqlite_cache
   db:

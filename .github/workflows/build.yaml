@@ -22,3 +22,4 @@ jobs:
         env:
           DATABASE_URI: ${{ secrets.DATABASE_URI }}
           RPC_URL_OPSEPOLIA: ${{ secrets.RPC_URL_OPSEPOLIA }}
+          RPC_URL_BASE: ${{ secrets.RPC_URL_BASE }}
