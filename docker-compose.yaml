@@ -10,6 +10,7 @@ services:
       - DATABASE_URI=${DATABASE_URI}
       - RPC_URL_OPSEPOLIA=${RPC_URL_OPSEPOLIA}
       - RPC_URL_BASE=${RPC_URL_BASE}
+      - RPC_URL_ARBITRUM_ONE=${RPC_URL_ARBITRUM_ONE}
     volumes:
       - sqlite_data:/sqlite_cache
   db:

@@ -23,3 +23,4 @@ jobs:
           DATABASE_URI: ${{ secrets.DATABASE_URI }}
           RPC_URL_OPSEPOLIA: ${{ secrets.RPC_URL_OPSEPOLIA }}
           RPC_URL_BASE: ${{ secrets.RPC_URL_BASE }}
+          RPC_URL_ARBITRUM_ONE: ${{ secrets.RPC_URL_ARBITRUM_ONE }}
