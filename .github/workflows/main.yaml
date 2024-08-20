@@ -16,9 +16,10 @@ jobs:
           compose-file: "./docker-compose.yaml"
         env:
           DATABASE_URI: ${{ secrets.DATABASE_URI }}
-          RPC_URL_OPSEPOLIA: ${{ secrets.RPC_URL_OPSEPOLIA }}
+          RPC_URL_OPTIMISM: ${{ secrets.RPC_URL_OPTIMISM }}
           RPC_URL_BASE: ${{ secrets.RPC_URL_BASE }}
           RPC_URL_ARBITRUM_ONE: ${{ secrets.RPC_URL_ARBITRUM_ONE }}
+          RPC_URL_OPSEPOLIA: ${{ secrets.RPC_URL_OPSEPOLIA }}
 
   deploy:
     needs: build
@@ -40,8 +41,9 @@ jobs:
           cd ${{ secrets.APP_PATH }}
           git pull origin main
           export DATABASE_URI=${{ secrets.DATABASE_URI }}
-          export RPC_URL_OPSEPOLIA=${{ secrets.RPC_URL_OPSEPOLIA }}
+          export RPC_URL_OPTIMISM=${{ secrets.RPC_URL_OPTIMISM }}
           export RPC_URL_BASE=${{ secrets.RPC_URL_BASE }}
           export RPC_URL_ARBITRUM_ONE=${{ secrets.RPC_URL_ARBITRUM_ONE }}
+          export RPC_URL_OPSEPOLIA=${{ secrets.RPC_URL_OPSEPOLIA }}
           docker compose -f docker-compose.yaml up -d --build
           ENDSSH
