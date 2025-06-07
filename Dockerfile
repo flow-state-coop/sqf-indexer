@@ -1,4 +1,4 @@
-FROM node:lts
+FROM node:20.12.2
 
 # Create app directory
 WORKDIR /usr/src/app

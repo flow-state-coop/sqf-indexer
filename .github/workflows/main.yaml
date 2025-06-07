@@ -16,6 +16,7 @@ jobs:
           compose-file: "./docker-compose.yaml"
         env:
           DATABASE_URI: ${{ secrets.DATABASE_URI }}
+          RPC_URL_CELO: ${{ secrets.RPC_URL_CELO }}
           RPC_URL_OPTIMISM: ${{ secrets.RPC_URL_OPTIMISM }}
           RPC_URL_BASE: ${{ secrets.RPC_URL_BASE }}
           RPC_URL_ARBITRUM_ONE: ${{ secrets.RPC_URL_ARBITRUM_ONE }}
@@ -41,6 +42,7 @@ jobs:
           cd ${{ secrets.APP_PATH }}
           git pull origin main
           export DATABASE_URI=${{ secrets.DATABASE_URI }}
+          export RPC_URL_CELO=${{ secrets.RPC_URL_CELO }}
           export RPC_URL_OPTIMISM=${{ secrets.RPC_URL_OPTIMISM }}
           export RPC_URL_BASE=${{ secrets.RPC_URL_BASE }}
           export RPC_URL_ARBITRUM_ONE=${{ secrets.RPC_URL_ARBITRUM_ONE }}

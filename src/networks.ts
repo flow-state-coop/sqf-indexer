@@ -17,6 +17,23 @@ type Contract = {
 
 const networks: Network[] = [
   {
+    id: 42220,
+    name: "celo",
+    rpc: process.env.RPC_URL_CELO ?? "https://forno.celo.org",
+    contracts: [
+      {
+        name: "Allo",
+        address: "0x1133eA7Af70876e64665ecD07C0A0476d09465a1",
+        fromBlock: 37338741n,
+      },
+      {
+        name: "AlloRegistry",
+        address: "0x4aacca72145e1df2aec137e1f3c5e3d75db8b5f3",
+        fromBlock: 37338741n,
+      },
+    ],
+  },
+  {
     id: 10,
     name: "optimism",
     rpc: process.env.RPC_URL_OPTIMISM ?? "https://optimism-rpc.publicnode.com",
@@ -24,12 +41,12 @@ const networks: Network[] = [
       {
         name: "Allo",
         address: "0x1133eA7Af70876e64665ecD07C0A0476d09465a1",
-        fromBlock: 111680064n,
+        fromBlock: 136823763n,
       },
       {
         name: "AlloRegistry",
         address: "0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3",
-        fromBlock: 111678968n,
+        fromBlock: 136823763n,
       },
     ],
   },
@@ -41,12 +58,12 @@ const networks: Network[] = [
       {
         name: "Allo",
         address: "0x1133eA7Af70876e64665ecD07C0A0476d09465a1",
-        fromBlock: 16047236n,
+        fromBlock: 30718760n,
       },
       {
         name: "AlloRegistry",
         address: "0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3",
-        fromBlock: 16047236n,
+        fromBlock: 30718760n,
       },
     ],
   },
@@ -58,12 +75,12 @@ const networks: Network[] = [
       {
         name: "Allo",
         address: "0x1133eA7Af70876e64665ecD07C0A0476d09465a1",
-        fromBlock: 239835829n,
+        fromBlock: 343821459n,
       },
       {
         name: "AlloRegistry",
         address: "0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3",
-        fromBlock: 239827023n,
+        fromBlock: 343821459n,
       },
     ],
   },
@@ -75,7 +92,7 @@ const networks: Network[] = [
       {
         name: "PoolFactory",
         address: "0xcB15aE6b8C1c0A868c9c6494C49D65eFce23313A",
-        fromBlock: 17503928n,
+        fromBlock: 34419n,
       },
     ],
   },
@@ -88,12 +105,12 @@ const networks: Network[] = [
       {
         name: "Allo",
         address: "0x1133eA7Af70876e64665ecD07C0A0476d09465a1",
-        fromBlock: 11724487n,
+        fromBlock: 28404424n,
       },
       {
         name: "AlloRegistry",
         address: "0x4AAcca72145e1dF2aeC137E1f3C5E3D75DB8b5f3",
-        fromBlock: 11724487n,
+        fromBlock: 28404424n,
       },
     ],
   },

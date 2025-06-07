@@ -8,6 +8,7 @@ services:
     environment:
       - NODE_ENV=production
       - DATABASE_URI=${DATABASE_URI}
+      - RPC_URL_CELO=${RPC_URL_CELO}
       - RPC_URL_OPTIMISM=${RPC_URL_OPTIMISM}
       - RPC_URL_BASE=${RPC_URL_BASE}
       - RPC_URL_ARBITRUM_ONE=${RPC_URL_ARBITRUM_ONE}
